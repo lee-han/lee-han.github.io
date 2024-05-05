@@ -13,42 +13,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 <style>
-    body {
-        display: flex;
-    }
-    #leftPanel {
-        width: 400;
-        position: fixed;
-        overflow-y: auto;
-        height: 100%;
-    }
-    #rightPanel {
-        margin-left: 400px;
-        width: calc(100% - 200px);
-        overflow-x: auto;
-        position: relative;
-    }
-    .selected {
-        background-color: #b4cff2;
-    }
-    .dataTable {
-        width: 100%;
-    }
+	body {
+		display: flex;
+	}
+	#leftPanel {
+		width: 400;
+		position: fixed;
+		overflow-y: auto;
+		height: 100%;
+	}
+	#rightPanel {
+		margin-left: 400px;
+		width: calc(100% - 200px);
+		overflow-x: auto;
+		position: relative;
+	}
+	.selected {
+		background-color: #b4cff2;
+	}
+	.dataTable {
+		width: 100%;
+	}
 	.dataTables_wrapper .dataTables_filter {
 		float: left !important;
 	}
-    img {
-        display: block;
-        max-width: none;
-    }
-    @keyframes smoothFadeInOut {
-        0%, 100% { opacity: 0.2; }
-        50% { opacity: 1; }
-    }
-    .marker {
-        position: absolute;
-        animation: smoothFadeInOut 3s infinite ease-in-out;
-    }
+	img {
+		display: block;
+		max-width: none;
+	}
+	@keyframes smoothFadeInOut {
+		0%, 100% { opacity: 0.2; }
+		50% { opacity: 1; }
+	}
+	.marker {
+		position: absolute;
+		animation: smoothFadeInOut 3s infinite ease-in-out;
+	}
+	.marker-legend {
+		display: inline-block;
+		font-size: 20px;
+		font-weight: bolder;
+		background-color: rgba(235, 234, 234, 0.85);
+		padding: 2px 5px; 
+		border-radius: 5px;
+	}
 	h1, h4 {
 		text-align: center;
 	}
@@ -75,8 +83,12 @@
 		<p><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">
 			데이터 로딩 에러 → 새창에서 버튼 클릭 후 닫고 새로고침
 		</a></p>
-		<p>위치값: <span id="mousePosition">없음</span>
-		<button id="openSurveyBtn" type="button" class="btn btn-info">데이터 입력</button></p>
+		<p>위치값: <button id="mousePosition" class="btn btn-outline-info">없음</button>
+			<button id="openSurveyBtn" type="button" class="btn btn-info">데이터 입력</button>
+		</p>
+			<div id="modal" style="display:none; position: fixed; top: 50%; left: 15%; transform: translate(-50%, -15%); background-color: rgba(255,255,255,1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+				위치가 복사되었습니다.
+			  </div>
 		<hr>
 		
 		<button id="selectAll" type="button" class="btn btn-primary m-3">전체 선택</button>
@@ -100,54 +112,48 @@
 </div>
 
 <div id="rightPanel">
-    <img src="https://i.imgur.com/VlioOG3.jpg" alt="동궐도" id="trackingImage">
+    <img src="동궐도6257x2917.jpg" alt="동궐도" id="trackingImage">
 </div>
 
 <script>
 $(document).ready(function() {
-    var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    var targetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv";
+	var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+	var targetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv";
 
-    // Google 스프레드시트 데이터를 가져와 DataTables에 로드하는 함수
-    function loadSpreadsheetData() {
-        fetch(proxyUrl + targetUrl)
-            .then(response => response.text())
-            .then(csvData => {
-                // Papa Parse 라이브러리를 사용하여 CSV 데이터를 JSON으로 변환
-                Papa.parse(csvData, {
-                    header: true, // 첫 번째 행을 필드 이름으로 사용
-                    skipEmptyLines: true, // 비어 있는 행 무시
-                    dynamicTyping: true, // 숫자, 불리언 값은 자동으로 해당 타입으로 변환
-                    complete: function(results) {
-                        // h1의 텍스트를 가져옵니다.
-                        var h1Text = $('h1').text();
+	function loadSpreadsheetData() {
+		fetch(proxyUrl + targetUrl)
+			.then(response => response.text())
+			.then(csvData => {
+				Papa.parse(csvData, {
+					header: true, // 첫 번째 행을 필드 이름으로 사용
+					skipEmptyLines: true, // 비어 있는 행 무시
+					dynamicTyping: true, // 숫자, 불리언 값은 자동으로 해당 타입으로 변환
+					complete: function(results) {
+						var h1Text = $('h1').text();
+						var filteredData = results.data.filter(function(row) {
+							return row['이미지'] === h1Text;
+						});
 
-                        // 데이터를 필터링합니다. h1의 텍스트와 5번째 컬럼(이미지)이 일치하는 행만 추출합니다.
-                        var filteredData = results.data.filter(function(row) {
-                            return row['이미지'] === h1Text; // '이미지'는 5번째 컬럼의 키값입니다. 실제 데이터 구조에 맞게 조정해주세요.
-                        });
-
-                        // DataTables에 필터링된 데이터 로드
-                        $('#example').DataTable({
-                            "dom": 'f<it>',
-                            "data": filteredData, // 필터링된 데이터 사용
-                            "columns": [
-                                {data: '명칭'},
-                                {data: '한자'},
-                                {data: '위치'},
-                                {data: '분류'},
-                                {data: '이미지', visible: false},
-                            ],
-                            "lengthChange": false,
-                            "paging": false,
-                            "searching": true,
-                            "info": true,
-                            "language": {
-                                "search": "",
-                                "searchPlaceholder": "검색어",
-                                "info": "_TOTAL_개의 항목",
-                                "infoEmpty": "0개의 항목",
-                            },
+						$('#example').DataTable({
+							"dom": 'f<it>',
+							"data": filteredData, // 필터링된 데이터 사용
+							"columns": [
+								{data: '명칭'},
+								{data: '한자'},
+								{data: '위치'},
+								{data: '분류'},
+								{data: '이미지', visible: false},
+							],
+							"lengthChange": false,
+							"paging": false,
+							"searching": true,
+							"info": true,
+							"language": {
+								"search": "",
+								"searchPlaceholder": "검색어",
+								"info": "_TOTAL_개의 항목",
+								"infoEmpty": "0개의 항목",
+							},
 							"columnDefs": [
 								{
 									targets: 3,
@@ -170,156 +176,200 @@ $(document).ready(function() {
 									}
 								}
 							],
-                            "initComplete": function(settings, json) {
-                                // DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
+							"initComplete": function(settings, json) {
+								// DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
 								$('div.dataTables_filter input').focus();
-                                $('#example tbody').on('click', 'tr', function() {
-                                    var $this = $(this);
-                                    var nameData = $('td', this).eq(0).text();
-                                    var positionData = $('td', this).eq(2).text();
+								$('#example tbody').on('click', 'tr', function() {
+									var $this = $(this);
+									var nameData = $('td', this).eq(0).text();
+									var positionData = $('td', this).eq(2).text();
 									var categoryData = $("td", this).eq(3).text();
-                                    var positions = positionData.split(',');
-                                    var topPosition = positions[0].trim() + 'px';
-                                    var leftPosition = positions[1].trim() + 'px';
-                                    var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
+									var positions = positionData.split(',');
+									var topPosition = positions[0].trim() + 'px';
+									var leftPosition = positions[1].trim() + 'px';
+									var leftPositionLegend = (parseInt(positions[1].trim()) + 50) + 'px';
+									var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
 
-                                    // 분류에 따라 색상 결정
-                                    var fillColor;
-                                    switch (categoryData) {
-                                        case '문':
-                                            fillColor = '#0a82ff';
-                                            break;
-                                        case '지명':
-                                            fillColor = '#2c952c';
-                                            break;
-                                        case '건물':
-                                            fillColor = '#ff607f';
-                                            break;
-                                        default:
-                                            fillColor = '#ffa500';
-                                    }
+									// 분류에 따라 색상 결정
+									var fillColor;
+									switch (categoryData) {
+										case '문':
+											fillColor = '#0a82ff';
+											break;
+										case '지명':
+											fillColor = '#2c952c';
+											break;
+										case '건물':
+											fillColor = '#ff607f';
+											break;
+										default:
+											fillColor = '#ffa500';
+									}
 
-                                    if (!$this.hasClass('selected')) {
-                                        $this.addClass('selected');
-                                        var newMarker = $(`
-											<svg class="marker ${markerClass}" style="position: absolute; top: ${topPosition}; left: ${leftPosition};" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
-												<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-											</svg>
+									if (!$this.hasClass('selected')) {
+										$this.addClass('selected');
+										var newMarker = $(`
+											<div class="marker-container" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
+												<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
+													<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+												</svg>
+											</div>
+											<div  class="marker-legend" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
+												<span style="color: ${fillColor};">${nameData}</span>
+											</div>
 										`);
-                                        $('#rightPanel').append(newMarker);
-                                    } else {
-                                        $this.removeClass('selected');
-                                        $('#rightPanel').find('.' + markerClass).remove();
-                                    }
+										$('#rightPanel').append(newMarker);
+									} else {
+										$this.removeClass('selected');
+										$('#rightPanel').find('.marker-container').remove();
+										$('#rightPanel').find('.marker-legend').remove();
+									}
 
 
-                                    $('.marker').css('animation', 'none');
-                                    setTimeout(function() {
-                                        $('.marker').css('animation', '');
-                                    }, 10);
-                                });
-                            }
-                        });
-                        // '전체선택' 버튼 클릭 이벤트
-                        $('#selectAll').on('click', function() {
-                            $('#example').DataTable().$('tr').each(function() {
-                                var $this = $(this);
-                                if (!$this.hasClass('selected')) {
-                                    $this.addClass('selected');
-                                    var nameData = $('td', this).eq(0).text();
-                                    var positionData = $('td', this).eq(2).text();
+									$('.marker').css('animation', 'none');
+									setTimeout(function() {
+										$('.marker').css('animation', '');
+									}, 10);
+								});
+							}
+						});
+						// '전체선택' 버튼 클릭 이벤트
+						$('#selectAll').on('click', function() {
+							$('#example').DataTable().$('tr').each(function() {
+								var $this = $(this);
+								if (!$this.hasClass('selected')) {
+									$this.addClass('selected');
+									var nameData = $('td', this).eq(0).text();
+									var positionData = $('td', this).eq(2).text();
 									var categoryData = $("td", this).eq(3).text();
-                                    var positions = positionData.split(',');
-                                    var topPosition = positions[0].trim() + 'px';
-                                    var leftPosition = positions[1].trim() + 'px';
-                                    var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
+									var positions = positionData.split(',');
+									var topPosition = positions[0].trim() + 'px';
+									var leftPosition = positions[1].trim() + 'px';
+									var leftPositionLegend = (parseInt(positions[1].trim()) + 50) + 'px';
+									var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
 
-                                    // 분류에 따라 색상 결정
-                                    var fillColor;
-                                    switch (categoryData) {
-                                        case '문':
-                                            fillColor = '#0a82ff';
-                                            break;
-                                        case '지명':
-                                            fillColor = '#2c952c';
-                                            break;
-                                        case '건물':
-                                            fillColor = '#ff607f';
-                                            break;
-                                        default:
-                                            fillColor = '#ffa500';
-                                    }
-                                    var newMarker = $(`
-										<svg class="marker ${markerClass}" style="position: absolute; top: ${topPosition}; left: ${leftPosition};" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
+									// 분류에 따라 색상 결정
+									var fillColor;
+									switch (categoryData) {
+										case '문':
+											fillColor = '#0a82ff';
+											break;
+										case '지명':
+											fillColor = '#2c952c';
+											break;
+										case '건물':
+											fillColor = '#ff607f';
+											break;
+										default:
+											fillColor = '#ffa500';
+									}
+									var newMarker = $(`
+									<div class="marker-container" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
+										<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
 											<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
 										</svg>
+									</div>
+									<div  class="marker-legend" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
+										<span style="color: ${fillColor};">${nameData}</span>
+									</div>
 									`);
 
-                                    $('#rightPanel').append(newMarker);
-                                }
-                            });
+									$('#rightPanel').append(newMarker);
+								}
+							});
 
-                            $('.marker').css('animation', 'none');
-                            setTimeout(function() {
-                                $('.marker').css('animation', '');
-                            }, 10);
-                        });
+							$('.marker').css('animation', 'none');
+							setTimeout(function() {
+								$('.marker').css('animation', '');
+							}, 10);
+						});
 
-                        // '선택해제' 버튼 클릭 이벤트
-                        $('#deselectAll').on('click', function() {
-                            $('#example').DataTable().$('tr.selected').removeClass('selected');
-                            $('#rightPanel').find('.marker').remove();
-                        });
+						// '선택해제' 버튼 클릭 이벤트
+						$('#deselectAll').on('click', function() {
+							$('#example').DataTable().$('tr.selected').removeClass('selected');
+							$('#rightPanel').find('.marker-container').remove();
+							$('#rightPanel').find('.marker-legend').remove();
+						});
 
-                    }
-                });
-            })
-            .catch(() => console.log("Can’t access " + targetUrl + " response. Blocked by browser?"))
-    }
-    loadSpreadsheetData();
+					}
+				});
+			})
+			.catch(() => console.log("Can’t access " + targetUrl + " response. Blocked by browser?"))
+	}
+	loadSpreadsheetData();
 });
 
 $(document).ready(function () {
-    var fixedX = -1; // 고정된 X 좌표값을 저장하기 위한 변수
-    var fixedY = -1; // 고정된 Y 좌표값을 저장하기 위한 변수
-    var isPositionFixed = false; // 위치가 고정되었는지 확인하기 위한 변수
+	var fixedX = -1; // 고정된 X 좌표값을 저장하기 위한 변수
+	var fixedY = -1; // 고정된 Y 좌표값을 저장하기 위한 변수
+	var isPositionFixed = false; // 위치가 고정되었는지 확인하기 위한 변수
 
-    // 이미지 위에서 클릭 이벤트 처리
-    $('#rightPanel img').click(function(e) {
-        isPositionFixed = true; // 위치 고정
-        // 이미지 내에서의 마우스 상대 위치 계산
-        var relX = e.pageX - $(this).offset().left;
-        var relY = e.pageY - $(this).offset().top;
-        // 고정된 위치값 저장
-        fixedX = Math.round(relX) - 23;
-        fixedY = Math.round(relY) - 40;
-        // 왼쪽 패널에 고정된 위치 표시
-        $('#mousePosition').text(fixedY + ', ' + fixedX);
-    });
+	// 이미지 위에서 클릭 이벤트 처리
+	$('#rightPanel img').click(function(e) {
+		isPositionFixed = true; // 위치 고정
+		// 이미지 내에서의 마우스 상대 위치 계산
+		var relX = e.pageX - $(this).offset().left;
+		var relY = e.pageY - $(this).offset().top;
+		// 고정된 위치값 저장
+		fixedX = Math.round(relX) - 23;
+		fixedY = Math.round(relY) - 40;
+		// 왼쪽 패널에 고정된 위치 표시
+		$('#mousePosition').text(fixedY + ', ' + fixedX);
+	});
 
-    // '설문 창 열기' 버튼 클릭 이벤트
-    $('#openSurveyBtn').click(function() {
-        if (!isPositionFixed) {
-            alert('먼저 이미지에서 위치를 선택해주세요.');
-            return; // 위치가 고정되지 않았다면 함수 종료
-        }
-        // 위치 복사 기능 실행
-        var positionText = $('#mousePosition').text(); // jQuery를 사용하여 텍스트 가져오기
-        var textarea = document.createElement('textarea');
-        textarea.value = positionText; // textContent 대신 value 사용
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+	// '설문 창 열기' 버튼 클릭 이벤트
+	$('#openSurveyBtn').click(function() {
+		if (!isPositionFixed) {
+			alert('먼저 이미지에서 위치를 선택해주세요.');
+			return; // 위치가 고정되지 않았다면 함수 종료
+		}
+		// 위치 복사 기능 실행
+		var positionText = $('#mousePosition').text(); // jQuery를 사용하여 텍스트 가져오기
+		var textarea = document.createElement('textarea');
+		textarea.value = positionText; // textContent 대신 value 사용
+		document.body.appendChild(textarea);
+		textarea.select();
+		document.execCommand('copy');
+		document.body.removeChild(textarea);
 
-        // 설문 링크 생성 및 열기
-        const imageTitle = document.querySelector('h1').textContent;
-        const surveyLink = `https://docs.google.com/forms/d/e/1FAIpQLSdq6UIihsR8CwrwrHiBgAQXgY00mPzyny3nl2YSwBNNbe0_kA/viewform?entry.1009188269=${encodeURIComponent(positionText)}&entry.683431722=${encodeURIComponent(imageTitle)}`;
-        window.open(surveyLink, '_blank');
-    });
+		// 설문 링크 생성 및 열기
+		const imageTitle = document.querySelector('h1').textContent;
+		const surveyLink = `https://docs.google.com/forms/d/e/1FAIpQLSdq6UIihsR8CwrwrHiBgAQXgY00mPzyny3nl2YSwBNNbe0_kA/viewform?entry.1009188269=${encodeURIComponent(positionText)}&entry.683431722=${encodeURIComponent(imageTitle)}`;
+		window.open(surveyLink, '_blank');
+	});
 });
 
+document.getElementById('mousePosition').addEventListener('click', function() {
+    const modal = document.getElementById('modal');
+    const textValue = this.innerText;
 
+    // 텍스트 값을 클립보드에 복사하는 함수
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+            console.error('Async: Could not copy text: ', err);
+        });
+    }
+
+    // 텍스트 값이 '없음'인 경우와 그렇지 않은 경우에 대한 처리
+    if (textValue === '없음') {
+        // 모달 텍스트를 '위치값이 없습니다.'로 설정
+        modal.innerText = '위치값이 없습니다.';
+    } else {
+        // 모달 텍스트를 '위치값이 복사되었습니다.'로 설정하고 텍스트 복사
+        modal.innerText = '위치값이 복사되었습니다.';
+        copyToClipboard(textValue);
+    }
+
+    // 모달 표시
+    modal.style.display = 'block';
+
+    // 2초 후 모달 숨기기
+    setTimeout(function() {
+        modal.style.display = 'none';
+    }, 2000);
+});
 
 </script>
 
