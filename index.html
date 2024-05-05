@@ -209,20 +209,21 @@ $(document).ready(function() {
 									if (!$this.hasClass('selected')) {
 										$this.addClass('selected');
 										var newMarker = $(`
-											<div class="marker-container" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
+											<div class="marker-container" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
 												<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
 													<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
 												</svg>
 											</div>
-											<div  class="marker-legend" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
+											<div  class="marker-legend" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
 												<span style="color: ${fillColor};">${nameData}</span>
 											</div>
 										`);
 										$('#rightPanel').append(newMarker);
 									} else {
 										$this.removeClass('selected');
-										$('#rightPanel').find('.marker-container').remove();
-										$('#rightPanel').find('.marker-legend').remove();
+										let markerId = positionData;
+										$('#rightPanel').find(`.marker-container[data-marker-id="${markerId}"]`).remove();
+										$('#rightPanel').find(`.marker-legend[data-marker-id="${markerId}"]`).remove();
 									}
 
 
@@ -264,12 +265,12 @@ $(document).ready(function() {
 											fillColor = '#ffa500';
 									}
 									var newMarker = $(`
-									<div class="marker-container" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
+									<div class="marker-container" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
 										<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
 											<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
 										</svg>
 									</div>
-									<div  class="marker-legend" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
+									<div  class="marker-legend" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};">
 										<span style="color: ${fillColor};">${nameData}</span>
 									</div>
 									`);
@@ -370,8 +371,6 @@ document.getElementById('mousePosition').addEventListener('click', function() {
         modal.style.display = 'none';
     }, 2000);
 });
-
-
 
 </script>
 
