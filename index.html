@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>조선 배치도</title>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+
+<style>
+    body {
+        display: flex;
+    }
+    #leftPanel {
+        width: 400;
+        position: fixed;
+        overflow-y: auto;
+        height: 100%;
+    }
+    #rightPanel {
+        margin-left: 400px;
+        width: calc(100% - 200px);
+        overflow-x: auto;
+        position: relative;
+    }
+    .selected {
+        background-color: #33a1d8;
+    }
+    .dataTable {
+        width: 100%;
+    }
+    img {
+        display: block;
+        max-width: none;
+    }
+    @keyframes smoothFadeInOut {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }
+    .marker {
+        position: absolute;
+        width: 45px;
+        height: 45px;
+        background-image: url('https://cdn.icon-icons.com/icons2/2104/PNG/512/map_location_icon_129048.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        animation: smoothFadeInOut 3s infinite ease-in-out;
+    }
+</style>
+</head>
+<body>
+
+<div id="leftPanel">
+	<h1>수선전도</h1>
+	1864년(갑자완산중간)
+	<hr>
+	
+	<p>위치값: <span id="mousePosition">없음</span>
+		<button id="openSurveyBtn">데이터 입력</button></p>
+	<hr>
+	
+	<button id="selectAll">전체 선택</button>
+	<button id="deselectAll">선택 초기화</button>
+	
+
+    <table id="example" class="display dataTable" style="width:100%">
+		<thead>
+			<tr>
+				<th>명칭</th>
+				<th>한자</th>
+				<th>위치</th>
+				<th>분류</th>
+				<th>이미지</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- 데이터 로우는 여기에 동적으로 삽입됩니다. -->
+		</tbody>
+    </table>
+</div>
+
+<div id="rightPanel">
+    <img src="https://i.imgur.com/dunNEbR.jpeg" alt="수선전도" id="trackingImage">
+</div>
+
+<script>
+$(document).ready(function () {
+    var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    var targetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv";
+	
+    // Google 스프레드시트 데이터를 가져와 DataTables에 로드하는 함수
+    function loadSpreadsheetData() {
+        fetch(proxyUrl + targetUrl)
+		.then(response => response.text())
+		.then(csvData => {
+            // Papa Parse 라이브러리를 사용하여 CSV 데이터를 JSON으로 변환
+            Papa.parse(csvData, {
+                header: true, // 첫 번째 행을 필드 이름으로 사용
+                skipEmptyLines: true, // 비어 있는 행 무시
+                dynamicTyping: true, // 숫자, 불리언 값은 자동으로 해당 타입으로 변환
+                complete: function(results) {
+                    // DataTables에 데이터 로드
+                    $('#example').DataTable({
+						"dom": 'f<it>',
+                        "data": results.data,
+                        "columns": [
+                            { data: '명칭' }, 
+                            { data: '한자' }, 
+                            { data: '위치' }, 
+                            { data: '분류' }, 
+                            { data: '이미지' }, 
+                        ],
+                        "lengthChange": false,
+                        "paging": false,
+                        "searching": true,
+                        "info": true,
+                        "language": {
+                            "search": "",
+                            "searchPlaceholder": "검색어",
+                            "info": "_TOTAL_개의 항목",
+                            "infoEmpty": "0개의 항목",
+                        },
+						"initComplete": function(settings, json) {
+                            // DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
+                            $('#example tbody').on('click', 'tr', function () {
+                                var $this = $(this);
+                                var nameData = $('td', this).eq(0).text();
+                                var positionData = $('td', this).eq(2).text();
+                                var positions = positionData.split(',');
+                                var topPosition = positions[0].trim() + 'px';
+                                var leftPosition = positions[1].trim() + 'px';
+                                var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
+
+                                if (!$this.hasClass('selected')) {
+                                    $this.addClass('selected');
+                                    var newMarker = $('<div class="marker ' + markerClass + '" style="top: ' + topPosition + '; left: ' + leftPosition + ';"></div>');
+                                    $('#rightPanel').append(newMarker);
+                                } else {
+                                    $this.removeClass('selected');
+                                    $('#rightPanel').find('.' + markerClass).remove();
+                                }
+
+                                $('.marker').css('animation', 'none');
+                                setTimeout(function() {
+                                    $('.marker').css('animation', '');
+                                }, 10);
+                            });
+                        }
+                    });
+					// '전체선택' 버튼 클릭 이벤트
+					$('#selectAll').on('click', function() {
+						$('#example').DataTable().$('tr').each(function() {
+						var $this = $(this);
+						if (!$this.hasClass('selected')) {
+							$this.addClass('selected');
+							var nameData = $('td', this).eq(0).text();
+							var positionData = $('td', this).eq(2).text();
+							var positions = positionData.split(',');
+							var topPosition = positions[0].trim() + 'px';
+							var leftPosition = positions[1].trim() + 'px';
+							var markerClass = 'marker-' + nameData.replace(/\s+/g, '-').toLowerCase();
+
+							var newMarker = $('<div class="marker ' + markerClass + '" style="top: ' + topPosition + '; left: ' + leftPosition + ';"></div>');
+							$('#rightPanel').append(newMarker);
+						}
+						});
+
+						$('.marker').css('animation', 'none');
+						setTimeout(function() {
+						$('.marker').css('animation', '');
+						}, 10);
+					});
+
+					// '선택해제' 버튼 클릭 이벤트
+					$('#deselectAll').on('click', function() {
+						$('#example').DataTable().$('tr.selected').removeClass('selected');
+						$('#rightPanel').find('.marker').remove();
+					});
+
+                }
+            });
+        })
+        .catch(() => console.log("Can’t access " + targetUrl + " response. Blocked by browser?"))
+    }
+    loadSpreadsheetData();
+});
+
+$(document).ready(function () {
+    var fixedX = -1; // 고정된 X 좌표값을 저장하기 위한 변수
+    var fixedY = -1; // 고정된 Y 좌표값을 저장하기 위한 변수
+    var isPositionFixed = false; // 위치가 고정되었는지 확인하기 위한 변수
+
+    // 이미지 위에서 클릭 이벤트 처리
+    $('#rightPanel img').click(function(e) {
+        isPositionFixed = true; // 위치 고정
+        // 이미지 내에서의 마우스 상대 위치 계산
+        var relX = e.pageX - $(this).offset().left;
+        var relY = e.pageY - $(this).offset().top;
+        // 고정된 위치값 저장
+        fixedX = Math.round(relX) - 23;
+        fixedY = Math.round(relY) - 40;
+        // 왼쪽 패널에 고정된 위치 표시
+        $('#mousePosition').text(fixedY + ', ' + fixedX);
+    });
+
+    // '설문 창 열기' 버튼 클릭 이벤트
+    $('#openSurveyBtn').click(function() {
+        if (!isPositionFixed) {
+            alert('먼저 이미지에서 위치를 선택해주세요.');
+            return; // 위치가 고정되지 않았다면 함수 종료
+        }
+        // 위치 복사 기능 실행
+        var positionText = $('#mousePosition').text(); // jQuery를 사용하여 텍스트 가져오기
+        var textarea = document.createElement('textarea');
+        textarea.value = positionText; // textContent 대신 value 사용
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        // 설문 링크 생성 및 열기
+        const imageTitle = document.querySelector('h1').textContent;
+        const surveyLink = `https://docs.google.com/forms/d/e/1FAIpQLSdq6UIihsR8CwrwrHiBgAQXgY00mPzyny3nl2YSwBNNbe0_kA/viewform?entry.1009188269=${encodeURIComponent(positionText)}&entry.683431722=${encodeURIComponent(imageTitle)}`;
+        window.open(surveyLink, '_blank');
+    });
+});
+
+
+
+</script>
+
+</body>
+</html>
