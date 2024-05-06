@@ -100,7 +100,7 @@
 <div id="leftPanel">
 	<h1>동궐도</h1>
 	<h4>1826~1830년 사이</h4>
-	<p class="center">기여자 : 성완, 다린, 정현</p>
+	<p class="center">기여자 : </p>
 	<div class="dropdown d-flex justify-content-center">
 		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		  다른 지도?
@@ -427,7 +427,7 @@ document.getElementById('zoomButton').addEventListener('click', function() {
                     const number = (6 - row) * 100 + col + 100;
                     cell.textContent = number;
                     cell.addEventListener('click', function() {
-                        window.open(number + '.jpg');
+                        window.open('image_tile/' + number + '.jpg');
                     });
                     overlay.appendChild(cell);
                 }
