@@ -27,6 +27,33 @@
 		overflow-x: auto;
 		position: relative;
 	}
+	.panel {
+    float: left;
+    width: 100%;
+}
+
+.overlay {
+    display: none;
+    position: absolute;
+    left: 0; /* 위치 조정 */
+    top: 0;
+    color: white; /* 텍스트 색상 */
+    font-weight: bold; /* 텍스트 굵기 */
+}
+
+.overlay div {
+	font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white; /* 테두리 색상 */
+}
+
+.right-panel {
+    position: relative;
+    width: auto; /* 이미지가 패널을 벗어나지 않도록 조정 */
+}
+
 	.dataTable {
 		width: 100%;
 	}
@@ -84,14 +111,15 @@
 		  <a class="dropdown-item" href="북궐도.html" target="_blank">북궐도</a>
 		</div>
 	  </div>
-	<hr>
-	
-	<div class="container">
-		<p><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">
-			데이터 로딩 에러 → 클릭 → 새창에서 버튼 클릭 → 새창 닫고 새로고침
-		</a></p>
-		<p>위치값: <button id="mousePosition" class="btn btn-outline-info">없음</button>
+	  <hr>
+	  
+	  <div class="container">
+		  <p><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">
+			  데이터 로딩 에러 → 클릭 → 새창에서 버튼 클릭 → 새창 닫고 새로고침
+			</a></p>
+			<p>위치값: <button id="mousePosition" class="btn btn-outline-info">없음</button>
 			<button id="openSurveyBtn" type="button" class="btn btn-info">데이터 입력</button>
+			<button id="zoomButton" class="btn btn-info">고화질</button>
 		</p>
 			<div id="modal" style="display:none; position: fixed; top: 20%; left: 15%; transform: translate(-50%, -15%); background-color: rgba(255,255,255,1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
 				위치가 복사되었습니다.
@@ -120,6 +148,7 @@
 
 <div id="rightPanel">
     <img src="동궐도6257x2917.jpg" alt="동궐도" id="trackingImage">
+	<div id="overlay" class="overlay"></div>
 </div>
 
 <script>
@@ -372,6 +401,47 @@ document.getElementById('mousePosition').addEventListener('click', function() {
         modal.style.display = 'none';
     }, 2000);
 });
+
+document.getElementById('zoomButton').addEventListener('click', function() {
+    var image = document.getElementById('trackingImage');
+    var overlay = document.getElementById('overlay');
+
+    // 오버레이 상태에 따라 보여주거나 숨기기
+    if (overlay.style.display === 'grid') {
+        // 오버레이가 이미 표시되어 있다면 숨깁니다.
+        overlay.style.display = 'none';
+    } else {
+        // 오버레이가 표시되지 않았다면, 이미지 로드 후 오버레이 설정
+        image.onload = function() {
+            overlay.style.display = 'grid';
+            overlay.style.width = image.width + 'px'; // 이미지의 실제 너비
+            overlay.style.height = image.height + 'px'; // 이미지의 실제 높이
+            overlay.style.gridTemplateColumns = 'repeat(16, 1fr)';
+            overlay.style.gridTemplateRows = 'repeat(6, 1fr)';
+            overlay.innerHTML = '';
+
+            for (let row = 1; row <= 6; row++) {
+                for (let col = 1; col <= 16; col++) {
+                    const cell = document.createElement('div');
+                    // 숫자 위치 변경
+                    const number = (6 - row) * 100 + col + 100;
+                    cell.textContent = number;
+                    cell.addEventListener('click', function() {
+                        window.open(number + '.jpg');
+                    });
+                    overlay.appendChild(cell);
+                }
+            }
+        };
+
+        // 이미지가 이미 로드된 상태라면 onload 이벤트를 강제로 실행
+        if (image.complete || image.naturalWidth !== 0) {
+            image.onload();
+        }
+    }
+});
+
+
 
 </script>
 
