@@ -178,6 +178,7 @@ $(document).ready(function() {
 								{data: '위치'},
 								{data: '분류'},
 								{data: '이미지', visible: false},
+								{data: '기여자 기록용 별명 (한 번만 적어주시면 됩니다)', visible: false},
 							],
 							"lengthChange": false,
 							"paging": false,
@@ -212,6 +213,18 @@ $(document).ready(function() {
 								}
 							],
 							"initComplete": function(settings, json) {
+								// 기여자 자동으로 중복 제거한 후 넣기
+								var uniqueTexts = [];
+								this.api().column(5).data().each(function(value, index){
+									if (value && uniqueTexts.indexOf(value) === -1) uniqueTexts.push(value);
+								});
+								uniqueTexts = uniqueTexts.sort(function(a, b) {
+									return a.localeCompare(b);
+								});
+								var textList = ' ' + uniqueTexts.join(', '); // 리스트 앞에 공백 추가
+								var centerElement = document.querySelector('.center');
+								if (centerElement) centerElement.innerText += textList;
+								
 								// DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
 								$('div.dataTables_filter input').focus();
 								$('#example tbody').on('click', 'tr', function() {
