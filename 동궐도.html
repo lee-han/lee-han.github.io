@@ -192,7 +192,7 @@ $(document).ready(function() {
 							"language": {
 								"search": "검색 : ",
 								"searchPlaceholder": "금호문이 어딜까요?",
-								"info": "총 _TOTAL_개. 원하는 항목을 클릭하세요.",
+								"info": "총 _TOTAL_개. 원하는 항목을 클릭하세요. 1개만 선택하면 자동으로 위치를 이동합니다.",
 								"infoEmpty": "0개의 항목",
 							},
 							"columnDefs": [
@@ -261,23 +261,41 @@ $(document).ready(function() {
 
 									if (!$this.hasClass('selected')) {
 										$this.addClass('selected');
-										var newMarker = $(`
-											<div class="marker-container" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
-												<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
-													<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-												</svg>
-											</div>
-											<div style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};  white-space: nowrap;">
-												<span class="marker-legend" data-marker-id="${positionData}" style="color: ${fillColor};">${nameData}</span>
-											</div>
-										`);
-										$('#rightPanel').append(newMarker);
+										// 마커 개수 확인
+										let markerCount = $('#rightPanel').children('.marker-container').length;
+										
+										// 마커가 한 개일 경우만 로직 실행
+										if (markerCount === 0) {
+											var newMarker = $(`
+												<div class="marker-container" data-marker-id="${positionData}" style="position: absolute; top: ${topPosition}; left: ${leftPosition}; text-align: center;">
+													<svg class="marker ${markerClass}" xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="${fillColor}" viewBox="0 0 16 16">
+														<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+													</svg>
+												</div>
+												<div style="position: absolute; top: ${topPosition}; left: ${leftPositionLegend};  white-space: nowrap;">
+													<span class="marker-legend" data-marker-id="${positionData}" style="color: ${fillColor};">${nameData}</span>
+												</div>
+											`);
+											$('#rightPanel').append(newMarker);
+
+											let panelWidth = $('#rightPanel').width();
+											let panelHeight = $('#rightPanel').height();
+											
+											let newTopPosition = (panelHeight / 2) - (45 / 2); 
+											let newLeftPosition = (panelWidth / 2) - (45 / 2);
+											
+											newMarker.find('.marker-container').css({'top': newTopPosition + 'px', 'left': newLeftPosition + 'px'});
+											newMarker.find('.marker-legend').css({'top': newTopPosition + 'px', 'left': (newLeftPosition + 55) + 'px'}); 
+
+											newMarker.get(0).scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+										}
 									} else {
 										$this.removeClass('selected');
 										let markerId = positionData;
 										$('#rightPanel').find(`.marker-container[data-marker-id="${markerId}"]`).remove();
 										$('#rightPanel').find(`.marker-legend[data-marker-id="${markerId}"]`).remove();
 									}
+
 
 
 									$('.marker').css('animation', 'none');
