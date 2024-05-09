@@ -113,9 +113,7 @@
 	  <hr>
 	  
 	  <div class="container">
-		  <p><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">
-			  ※데이터 로딩 에러 시
-			</a>ㅤㅤㅤ<a href="guide.html" target="_blank">※입력 가이드</a></p>
+		  <p><a href="guide.html" target="_blank">※입력 가이드</a></p>
 			<p>위치값: <button id="mousePosition" class="btn btn-outline-info">없음</button>
 			<button id="openSurveyBtn" type="button" class="btn btn-info">데이터 입력</button>
 			<button id="zoomButton" class="btn btn-info">고화질</button>
@@ -125,9 +123,6 @@
 			  </div>
 		<hr>
 		
-		<p>
-			표의 항목을 클릭하면 위치가 표시됩니다.
-		</p>
 		<button id="selectAll" type="button" class="btn btn-primary m-3">전체 선택</button>
 		<button id="deselectAll" type="button" class="btn btn-secondary m-3">선택 초기화</button>
 	</div>
@@ -146,6 +141,13 @@
 			<!-- 데이터 로우는 여기에 동적으로 삽입됩니다. -->
 		</tbody>
     </table>
+	<ul class="m-3">
+		※ 데이터 로딩 에러 시
+		<li><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">클릭</a></li>
+		<li>새 창의 request... 버튼 클릭</li>
+		<li>새 창 닫기</li>
+		<li>현재 창 새로고침</li>
+	</ul>
 </div>
 
 <div id="rightPanel">
@@ -190,7 +192,7 @@ $(document).ready(function() {
 							"language": {
 								"search": "검색 : ",
 								"searchPlaceholder": "금호문이 어딜까요?",
-								"info": "총 _TOTAL_개의 위치 항목",
+								"info": "총 _TOTAL_개. 원하는 항목을 클릭하세요.",
 								"infoEmpty": "0개의 항목",
 							},
 							"columnDefs": [
