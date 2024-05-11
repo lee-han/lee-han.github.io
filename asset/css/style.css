@@ -1,0 +1,93 @@
+#leftPanel {
+	width: 400px; /* 'px' 단위를 추가 */
+	position: fixed;
+	overflow-y: auto;
+	height: 100%;
+}
+#rightPanel {
+	margin-left: 400px; /* 왼쪽 패널의 너비와 동일하게 설정 */
+	width: calc(100% - 400px); /* 화면의 남은 너비를 사용하도록 계산 */
+	overflow-x: auto;
+	position: relative;
+}
+
+.panel {
+	float: left;
+	width: 100%;
+}
+
+.overlay {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	color: white;
+	font-weight: bold;
+}
+.overlay div {
+	font-size: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid white;
+}
+
+.right-panel {
+	position: relative;
+	width: auto; /* 이미지가 패널을 벗어나지 않도록 조정 */
+}
+
+.dataTable {
+	width: 100%;
+}
+
+h1 {
+	margin-top: 20px;
+}
+
+img {
+	display: block;
+	max-width: none;
+}
+
+.selected {
+	background-color: #b4cff2;
+}
+
+.center {
+	text-align: center;
+}
+
+.dataTables_filter {
+	float: left !important;
+	margin-left: 30px !important;
+	margin-top: 20px !important;
+}
+
+.dataTables_info {
+	margin-left: 32px !important;
+	margin-bottom: 20px !important;
+}
+
+.marker {
+	position: absolute;
+	animation: smoothFadeInOut 3s infinite ease-in-out;
+}
+@keyframes smoothFadeInOut {
+	0%, 100% { opacity: 0.2; }
+	50% { opacity: 1; }
+}
+
+.marker-legend {
+	position: static;
+	display: inline-block;
+	font-size: 20px;
+	font-weight: bolder;
+	background-color: rgba(235, 234, 234, 0.85);
+	padding: 2px 5px; 
+	border-radius: 5px;
+}
+
+.contribute::before {
+	content: "기여자 :";
+}
