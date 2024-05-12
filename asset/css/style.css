@@ -1,12 +1,16 @@
 #leftPanel {
-	width: 400px; /* 'px' 단위를 추가 */
+	width: 400px;
+	/* 'px' 단위를 추가 */
 	position: fixed;
 	overflow-y: auto;
 	height: 100%;
 }
+
 #rightPanel {
-	margin-left: 400px; /* 왼쪽 패널의 너비와 동일하게 설정 */
-	width: calc(100% - 400px); /* 화면의 남은 너비를 사용하도록 계산 */
+	margin-left: 400px;
+	/* 왼쪽 패널의 너비와 동일하게 설정 */
+	width: calc(100% - 400px);
+	/* 화면의 남은 너비를 사용하도록 계산 */
 	overflow-x: auto;
 	position: relative;
 }
@@ -24,6 +28,7 @@
 	color: white;
 	font-weight: bold;
 }
+
 .overlay div {
 	font-size: 50px;
 	display: flex;
@@ -34,7 +39,8 @@
 
 .right-panel {
 	position: relative;
-	width: auto; /* 이미지가 패널을 벗어나지 않도록 조정 */
+	width: auto;
+	/* 이미지가 패널을 벗어나지 않도록 조정 */
 }
 
 .dataTable {
@@ -73,9 +79,17 @@ img {
 	position: absolute;
 	animation: smoothFadeInOut 3s infinite ease-in-out;
 }
+
 @keyframes smoothFadeInOut {
-	0%, 100% { opacity: 0.2; }
-	50% { opacity: 1; }
+
+	0%,
+	100% {
+		opacity: 0.2;
+	}
+
+	50% {
+		opacity: 1;
+	}
 }
 
 .marker-legend {
@@ -84,10 +98,33 @@ img {
 	font-size: 20px;
 	font-weight: bolder;
 	background-color: rgba(235, 234, 234, 0.85);
-	padding: 2px 5px; 
+	padding: 2px 5px;
 	border-radius: 5px;
 }
 
 .contribute::before {
 	content: "기여자 :";
+}
+
+code {
+	border: 1px solid #c1bfc2;
+	border-radius: 4px;
+	padding: 3px 3px;
+	font-size: 0.9rem;
+}
+
+.guide {
+	max-width: 800px;
+	color: #3a393a;
+
+	>div>h1 {
+		margin-bottom: 30px;
+		text-align: center;
+	}
+
+}
+
+hr {
+	margin-top: 2em;
+	margin-bottom: 2em;
 }
