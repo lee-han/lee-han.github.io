@@ -25,4 +25,4 @@ jobs:
           git config --global user.name "lee-han"
           git add asset/csv/data.csv
           git commit -m "Update CSV for $(date +'%Y-%m-%d')"
-          git push https://${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/lee-han/lee-han.github.io.git HEAD:main
+          git push https://${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/lee-han/lee-han.github.io.git HEAD:master
