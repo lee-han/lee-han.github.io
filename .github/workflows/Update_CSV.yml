@@ -17,10 +17,12 @@ jobs:
         run: |
           curl -L 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv' -o asset/csv/data.csv
           
-      - name: Commit CSV
+      - name: Commit and Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         run: |
           git config --global user.email "t01062782363@gmail.com"
           git config --global user.name "lee-han"
           git add asset/csv/data.csv
           git commit -m "Update CSV for $(date +'%Y-%m-%d')"
-          git push
+          git push https://${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/lee-han/lee-han.github.io.git HEAD:main
