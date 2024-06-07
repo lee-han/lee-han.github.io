@@ -15,7 +15,7 @@ jobs:
 
       - name: Download Google Sheets CSV
         run: |
-          curl -L 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv' -o assets/csv/data.csv
+          curl -L 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv' -o asset/csv/data.csv
           
       - name: Commit CSV
         run: |
