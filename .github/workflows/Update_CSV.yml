@@ -1,0 +1,25 @@
+name: Update CSV
+
+on:
+  schedule:
+    # 매일 오후 6시(UTC) / 한국 시간으로 새벽 3시에 실행
+    - cron:  '0 18 * * *'
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download Google Sheets CSV
+        run: |
+          curl -L 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv' -o assets/csv/data.csv
+          
+      - name: Commit CSV
+        run: |
+          git config --global user.email "t01062782363@gmail.com"
+          git config --global user.name "lee-han"
+          git add asset/csv/data.csv
+          git commit -m "Update CSV for $(date +'%Y-%m-%d')"
+          git push
