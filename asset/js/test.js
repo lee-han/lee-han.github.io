@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	var csvFilePath = "assets/csv/data.csv";
+	var csvFilePath = "asset/csv/data.csv";
 
 	function loadSpreadsheetData() {
 		fetch(csvFilePath)
