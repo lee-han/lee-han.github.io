@@ -24,5 +24,12 @@ jobs:
           git config --global user.email "t01062782363@gmail.com"
           git config --global user.name "lee-han"
           git add asset/csv/data.csv
-          git commit -m "Update CSV for $(date +'%Y-%m-%d')"
-          git push https://${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/lee-han/lee-han.github.io.git HEAD:master
+          # 변경사항이 있는지 확인합니다.
+          git diff --staged --exit-code || exit_code=$?
+          # 변경사항이 없다면 (exit_code가 0이 아니라면), 푸쉬하지 않고 성공적으로 종료합니다.
+          if [ "$exit_code" -ne "0" ]; then
+            git commit -m "Update CSV for $(date +'%Y-%m-%d')"
+            git push https://${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/lee-han/lee-han.github.io.git HEAD:master
+          else
+            echo "No changes to commit."
+          fi
