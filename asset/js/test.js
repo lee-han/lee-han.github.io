@@ -10,14 +10,9 @@ $(document).ready(function() {
 					skipEmptyLines: true, // 비어 있는 행 무시
 					dynamicTyping: true, // 숫자, 불리언 값은 자동으로 해당 타입으로 변환
 					complete: function(results) {
-						var h1Text = $('h1').text();
-						var filteredData = results.data.filter(function(row) {
-							return row['이미지'] === h1Text;
-						});
-
 						$('#example').DataTable({
 							"dom": 'f<it>',
-							"data": filteredData, // 필터링된 데이터 사용
+							"data": results.data,
 							"columns": [
 								{data: '명칭'},
 								{data: '한자'},
