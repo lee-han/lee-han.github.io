@@ -73,7 +73,12 @@ $(document).ready(function() {
 							
 									// 분류에 따라 색상 결정
 									var fillColor = getFillColorByCategory(categoryData);
-							
+									
+									var naming = sessionStorage.getItem('selectedNaming'); // 세션 스토리지에서 명칭 가져오기
+									if (naming) {
+										// 해당 명칭을 가진 요소 찾기
+										var $this = $(`[data-naming="${naming}"]`);
+
 									if (!$this.hasClass('selected')) {
 										$this.addClass('selected');
 										let markerId = positionData; // 마커 ID 설정

@@ -91,3 +91,10 @@ function getFillColorByCategory(category) {
             return '#ffa500';
     }
 }
+
+// 테이블 행 클릭 이벤트 추가
+$('table tr').on('click', function() {
+    var naming = $(this).data('naming'); // 클릭한 행의 명칭 가져오기
+    sessionStorage.setItem('selectedNaming', naming); // 세션 스토리지에 저장
+    window.location.href = 'newPage.html'; // 새로운 페이지로 이동
+});
