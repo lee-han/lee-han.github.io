@@ -12,7 +12,9 @@ $(document).ready(function() {
                     complete: function(results) {
 
                         $('#example').DataTable({
-                            "dom": 'f<it>',
+                            "dom": 'B<"top"lfip>rt<"bottom"ip>',
+							"pageLength": 20,
+							"lengthMenu": [ 10, 20, 50 ],
                             "data": results.data,
                             "columns": [
                                 {data: '명칭'},
