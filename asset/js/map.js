@@ -287,3 +287,14 @@ function getFillColorByCategory(category) {
             return '#ffa500';
     }
 }
+
+// 인풋 필드에 포커스가 갔을 때 세션 스토리지의 값을 입력
+document.addEventListener('DOMContentLoaded', function() {
+    const inputField = document.getElementById('inputField');
+    inputField.addEventListener('focus', function() {
+        const storedValue = sessionStorage.getItem('selectedNaming');
+        if (storedValue) {
+            this.value = storedValue;
+        }
+    });
+});

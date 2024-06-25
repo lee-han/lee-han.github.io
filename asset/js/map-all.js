@@ -12,8 +12,8 @@ $(document).ready(function() {
                     complete: function(results) {
 
                         $('#example').DataTable({
-                            "dom": 'B<"top"lfip>rt<"bottom"ip>',
-							"pageLength": 20,
+                            "dom": 'lf<ip>rt<ip>',
+							"pageLength": 10,
 							"lengthMenu": [ 10, 20, 50 ],
                             "data": results.data,
                             "columns": [
@@ -31,7 +31,7 @@ $(document).ready(function() {
                             "language": {
                                 "search": "검색 : ",
                                 "searchPlaceholder": "어디를 찾으세요?",
-                                "info": "총 _TOTAL_개. 원하는 항목을 클릭하세요.",
+                                "info": "총 _TOTAL_개. 항목을 클릭하면 해당 배치도로 이동합니다.",
                                 "infoEmpty": "0개의 항목",
                                 "paginate": {
                                     "first": "처음",
