@@ -1,8 +1,9 @@
 $(document).ready(function() {
-	var csvFilePath = "asset/csv/data.csv";
+	var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+	var targetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrUO5TlUrjKn_VvRfjbJzfdueYIg15frO3mDc-Ef_438RNmGc-wxX5f5NfmL_zR9IU0k5-xqxfwf2f/pub?gid=692238516&single=true&output=csv";
 
 	function loadSpreadsheetData() {
-		fetch(csvFilePath)
+		fetch(proxyUrl + targetUrl)
 			.then(response => response.text())
 			.then(csvData => {
 				Papa.parse(csvData, {
@@ -157,7 +158,7 @@ $(document).ready(function() {
 					}
 				});
 			})
-			.catch(() => console.log("Can’t access response. Blocked by browser?"))
+			.catch(() => console.log("Can’t access " + targetUrl + " response. Blocked by browser?"))
 	}
 	loadSpreadsheetData();
 });

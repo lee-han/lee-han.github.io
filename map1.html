@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>조선시대 배치도 - 동궐도</title>
+	<title>조선시대 배치도 - 수선전도</title>
 	<link rel="stylesheet" type="text/css"
 		href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
 	<script type="text/javascript"
@@ -26,14 +26,16 @@
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="asset/css/style.css">
 
+
 </head>
 
 <body>
 
 	<div id="leftPanel">
+		<a href="/">홈 화면</a>
 		<div class="container center">
-			<h1>동궐도</h1>
-			<h4>고려대학교 박물관 소장</h4>
+			<h1>수선전도</h1>
+			<h4>1864년(갑자완산중간)</h4>
 			<p class="center contribute"></p>
 			<div class="dropdown d-flex justify-content-center">
 				<button class="btn btn-secondary dropdown-toggle" type="button"
@@ -46,30 +48,17 @@
 						target="_blank">동궐도</a>
 				</div>
 			</div>
-			<p class="center mt-2"><a href="guide.html"
-					target="_blank">※읽어보세요</a></p>
+			<p class="center mt-2">
+				<a href="https://docs.google.com/forms/d/e/1FAIpQLSfmJW_9c0Zmgp7oqyZx0cak5b3njJaUeBwpPEg2wtgy1N36qQ/viewform" target="_blank">★오류 신고</a>
+			</p>
 			<hr>
 		</div>
+
 
 		<div class="container">
-			<p>위치값: <button id="mousePosition"
-					class="btn btn-outline-info">없음</button>
-				<button id="openSurveyBtn" type="button"
-					class="btn btn-info">데이터 입력</button>
-				<button id="zoomButton" class="btn btn-info">고화질</button>
-			</p>
-			<div id="modal"
-				style="display:none; position: fixed; top: 20%; left: 15%; transform: translate(-50%, -15%); background-color: rgba(255,255,255,1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-				위치가 복사되었습니다.
-			</div>
-			<hr>
-
-			<button id="selectAll" type="button" class="btn btn-primary m-3">전체
-				선택</button>
-			<button id="deselectAll" type="button"
-				class="btn btn-secondary m-3">선택 초기화</button>
+			<button id="selectAll" type="button" class="btn btn-primary m-3">전체 선택</button>
+			<button id="deselectAll" type="button" class="btn btn-secondary m-3">선택 초기화</button>
 		</div>
-
 
 		<table id="example" class="display dataTable" style="width:100%">
 			<thead>
@@ -84,19 +73,10 @@
 				<!-- 데이터 로우는 여기에 동적으로 삽입됩니다. -->
 			</tbody>
 		</table>
-		<ul class="m-3">
-			※ 데이터 로딩 에러 시
-			<li><a href="https://cors-anywhere.herokuapp.com/corsdemo"
-					target="_blank">클릭</a></li>
-			<li>새 창의 request... 버튼 클릭</li>
-			<li>새 창 닫기</li>
-			<li>현재 창 새로고침</li>
-		</ul>
 	</div>
 
 	<div id="rightPanel">
-		<img src="asset/image/동궐도6257x2917.jpg" alt="동궐도" id="trackingImage">
-		<div id="overlay" class="overlay"></div>
+		<img src="asset/image/수선전도.jpeg" alt="수선전도" id="trackingImage">
 	</div>
 
 	<script type="text/javascript" src="asset/js/map.js"></script>
