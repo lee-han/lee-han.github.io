@@ -24,9 +24,8 @@ $(document).ready(function() {
                                 {data: '이미지'},
                                 {data: '기여자 기록용 별명 (한 번만 적어주시면 됩니다)', visible: false},
                             ],
-                            "lengthChange": false,
+                            "lengthChange": true,
                             "paging": true,
-                            "pageLength": 10, // 한 페이지에 보여줄 항목 수
                             "searching": true,
                             "info": true,
                             "language": {
