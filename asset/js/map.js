@@ -288,36 +288,25 @@ function getFillColorByCategory(category) {
     }
 }
 
-// 인풋 필드에 포커스가 갔을 때 세션 스토리지의 값을 입력
-document.addEventListener('DOMContentLoaded', function() {
-    // MutationObserver를 사용하여 필터링 창이 동적으로 생성되는 것을 감지
-    const targetNode = document.getElementById('example_filter');
-    const config = { childList: true, subtree: true };
+function checkAndSetInputValue() {
+    const inputField = document.querySelector('#example_filter input[type="search"]');
+    if (inputField) {
+        const storedValue = sessionStorage.getItem('selectedNaming');
+        if (storedValue) {
+            inputField.value = storedValue;
 
-    const callback = function(mutationsList, observer) {
-        for (let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                const inputField = document.querySelector('#example_filter input[type="search"]');
-                if (inputField) {
-                    // 필터링 창의 입력 필드에 포커스가 갔을 때 세션 스토리지의 값을 입력
-                    inputField.addEventListener('focus', function() {
-                        const storedValue = sessionStorage.getItem('selectedNaming');
-                        if (storedValue) {
-                            this.value = storedValue;
-                        }
-                    });
-                    // 처음 로드 시에도 값을 넣어줌
-                    const storedValue = sessionStorage.getItem('selectedNaming');
-                    if (storedValue) {
-                        inputField.value = storedValue;
-                    }
-                    // 더 이상 감시할 필요가 없으므로 observer를 중지
-                    observer.disconnect();
-                }
-            }
+            const event = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13
+            });
+            inputField.dispatchEvent(event);
         }
-    };
+        clearInterval(checkInterval); // 요소를 찾았으므로 타이머 중지
+    }
+}
 
-    const observer = new MutationObserver(callback);
-    observer.observe(targetNode, config);
-});
+const checkInterval = setInterval(checkAndSetInputValue, 500); // 500ms마다 확인
+
