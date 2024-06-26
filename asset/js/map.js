@@ -61,24 +61,42 @@ $(document).ready(function() {
 								// DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
 								$('div.dataTables_filter input').focus();
 
-								//홈화면에서 클릭한 항목이 있을 때 그 항목만 필터링
+								// 홈화면에서 클릭한 항목이 있을 때 그 항목만 필터링
 								const inputField = document.querySelector('#example_filter input[type="search"]');
 								if (inputField) {
 									const storedValue = sessionStorage.getItem('selectedNaming');
 									if (storedValue) {
 										inputField.value = storedValue;
 
+										// input 이벤트 생성 및 트리거
+										const inputEvent = new Event('input', {
+											bubbles: true,
+											cancelable: true
+										});
+										inputField.dispatchEvent(inputEvent);
+
+										// change 이벤트 생성 및 트리거
+										const changeEvent = new Event('change', {
+											bubbles: true,
+											cancelable: true
+										});
+										inputField.dispatchEvent(changeEvent);
+
 										// 엔터키 이벤트 생성 및 트리거
-										const event = new KeyboardEvent('keydown', {
+										const enterEvent = new KeyboardEvent('keydown', {
 											bubbles: true,
 											cancelable: true,
 											key: 'Enter',
 											code: 'Enter',
 											keyCode: 13
 										});
-										inputField.dispatchEvent(event);
+										inputField.dispatchEvent(enterEvent);
+
+										// 세션 스토리지에서 값 삭제
+										sessionStorage.removeItem('selectedNaming');
 									}
 								}
+
 
 								$('#example tbody').on('click', 'tr', function() {
 									var $this = $(this);
