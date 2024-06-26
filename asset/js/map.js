@@ -288,13 +288,14 @@ function getFillColorByCategory(category) {
     }
 }
 
-function checkAndSetInputValue() {
+setTimeout(function() {
     const inputField = document.querySelector('#example_filter input[type="search"]');
     if (inputField) {
         const storedValue = sessionStorage.getItem('selectedNaming');
         if (storedValue) {
             inputField.value = storedValue;
 
+            // 엔터키 이벤트 생성 및 트리거
             const event = new KeyboardEvent('keydown', {
                 bubbles: true,
                 cancelable: true,
@@ -304,9 +305,6 @@ function checkAndSetInputValue() {
             });
             inputField.dispatchEvent(event);
         }
-        clearInterval(checkInterval); // 요소를 찾았으므로 타이머 중지
     }
-}
-
-const checkInterval = setInterval(checkAndSetInputValue, 500); // 500ms마다 확인
+}, 2000); // 2000ms = 2초
 
