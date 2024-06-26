@@ -60,6 +60,26 @@ $(document).ready(function() {
 								
 								// DataTable 로딩 완료 후 클릭 이벤트 리스너 설정
 								$('div.dataTables_filter input').focus();
+
+								//홈화면에서 클릭한 항목이 있을 때 그 항목만 필터링
+								const inputField = document.querySelector('#example_filter input[type="search"]');
+								if (inputField) {
+									const storedValue = sessionStorage.getItem('selectedNaming');
+									if (storedValue) {
+										inputField.value = storedValue;
+
+										// 엔터키 이벤트 생성 및 트리거
+										const event = new KeyboardEvent('keydown', {
+											bubbles: true,
+											cancelable: true,
+											key: 'Enter',
+											code: 'Enter',
+											keyCode: 13
+										});
+										inputField.dispatchEvent(event);
+									}
+								}
+
 								$('#example tbody').on('click', 'tr', function() {
 									var $this = $(this);
 									var nameData = $('td', this).eq(0).text();
@@ -162,116 +182,6 @@ $(document).ready(function() {
 	loadSpreadsheetData();
 });
 
-$(document).ready(function () {
-	var fixedX = -1; // 고정된 X 좌표값을 저장하기 위한 변수
-	var fixedY = -1; // 고정된 Y 좌표값을 저장하기 위한 변수
-	var isPositionFixed = false; // 위치가 고정되었는지 확인하기 위한 변수
-
-	// 이미지 위에서 클릭 이벤트 처리
-	$('#rightPanel img').click(function(e) {
-		isPositionFixed = true; // 위치 고정
-		// 이미지 내에서의 마우스 상대 위치 계산
-		var relX = e.pageX - $(this).offset().left;
-		var relY = e.pageY - $(this).offset().top;
-		// 고정된 위치값 저장
-		fixedX = Math.round(relX) - 23;
-		fixedY = Math.round(relY) - 40;
-		// 왼쪽 패널에 고정된 위치 표시
-		$('#mousePosition').text(fixedY + ', ' + fixedX);
-	});
-
-	// '설문 창 열기' 버튼 클릭 이벤트
-	$('#openSurveyBtn').click(function() {
-		if (!isPositionFixed) {
-			alert('먼저 이미지에서 위치를 선택해주세요.');
-			return; // 위치가 고정되지 않았다면 함수 종료
-		}
-		// 위치 복사 기능 실행
-		var positionText = $('#mousePosition').text(); // jQuery를 사용하여 텍스트 가져오기
-		var textarea = document.createElement('textarea');
-		textarea.value = positionText; // textContent 대신 value 사용
-		document.body.appendChild(textarea);
-		textarea.select();
-		document.execCommand('copy');
-		document.body.removeChild(textarea);
-
-		// 설문 링크 생성 및 열기
-		const imageTitle = document.querySelector('h1').textContent;
-		const surveyLink = `https://docs.google.com/forms/d/e/1FAIpQLSdq6UIihsR8CwrwrHiBgAQXgY00mPzyny3nl2YSwBNNbe0_kA/viewform?entry.1009188269=${encodeURIComponent(positionText)}&entry.683431722=${encodeURIComponent(imageTitle)}`;
-		window.open(surveyLink, '_blank');
-	});
-});
-
-// 위치값 복사 시 모달
-document.getElementById('mousePosition').addEventListener('click', function() {
-    const modal = document.getElementById('modal');
-    const textValue = this.innerText;
-
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            console.log('Async: Copying to clipboard was successful!');
-        }, function(err) {
-            console.error('Async: Could not copy text: ', err);
-        });
-    }
-
-    if (textValue === '없음') {
-        modal.innerText = '위치값이 없습니다.';
-    } else {
-        modal.innerText = '위치값이 복사되었습니다.';
-        copyToClipboard(textValue);
-    }
-
-    modal.style.display = 'block';
-
-    setTimeout(function() {
-        modal.style.display = 'none';
-    }, 2000);
-});
-
-// 'zoomButton'이 존재하는지 확인
-var zoomButton = document.getElementById('zoomButton');
-if (zoomButton) {
-    zoomButton.addEventListener('click', function() {
-        var image = document.getElementById('trackingImage');
-        var overlay = document.getElementById('overlay');
-
-        // 오버레이 상태에 따라 보여주거나 숨기기
-        if (overlay.style.display === 'grid') {
-            // 오버레이가 이미 표시되어 있다면 숨깁니다.
-            overlay.style.display = 'none';
-        } else {
-            // 오버레이가 표시되지 않았다면, 이미지 로드 후 오버레이 설정
-            image.onload = function() {
-                overlay.style.display = 'grid';
-                overlay.style.width = image.width + 'px'; // 이미지의 실제 너비
-                overlay.style.height = image.height + 'px'; // 이미지의 실제 높이
-                overlay.style.gridTemplateColumns = 'repeat(16, 1fr)';
-                overlay.style.gridTemplateRows = 'repeat(6, 1fr)';
-                overlay.innerHTML = '';
-
-                for (let row = 1; row <= 6; row++) {
-                    for (let col = 1; col <= 16; col++) {
-                        const cell = document.createElement('div');
-                        // 숫자 위치 변경
-                        const number = (6 - row) * 100 + col + 100;
-                        cell.textContent = number;
-                        cell.addEventListener('click', function() {
-                            window.open('asset/image/image_tile_dong/' + number + '.jpg');
-                        });
-                        overlay.appendChild(cell);
-                    }
-                }
-            };
-
-            // 이미지가 이미 로드된 상태라면 onload 이벤트를 강제로 실행
-            if (image.complete || image.naturalWidth !== 0) {
-                image.onload();
-            }
-        }
-    });
-}
-
 // 위치 분류에 따라 색상 지정
 function getFillColorByCategory(category) {
     switch (category) {
@@ -287,24 +197,3 @@ function getFillColorByCategory(category) {
             return '#ffa500';
     }
 }
-
-setTimeout(function() {
-    const inputField = document.querySelector('#example_filter input[type="search"]');
-    if (inputField) {
-        const storedValue = sessionStorage.getItem('selectedNaming');
-        if (storedValue) {
-            inputField.value = storedValue;
-
-            // 엔터키 이벤트 생성 및 트리거
-            const event = new KeyboardEvent('keydown', {
-                bubbles: true,
-                cancelable: true,
-                key: 'Enter',
-                code: 'Enter',
-                keyCode: 13
-            });
-            inputField.dispatchEvent(event);
-        }
-    }
-}, 2000); // 2000ms = 2초
-
