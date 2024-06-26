@@ -68,31 +68,6 @@ $(document).ready(function() {
 									if (storedValue) {
 										inputField.value = storedValue;
 
-										// input 이벤트 생성 및 트리거
-										const inputEvent = new Event('input', {
-											bubbles: true,
-											cancelable: true
-										});
-										inputField.dispatchEvent(inputEvent);
-
-										// change 이벤트 생성 및 트리거
-										const changeEvent = new Event('change', {
-											bubbles: true,
-											cancelable: true
-										});
-										inputField.dispatchEvent(changeEvent);
-
-										// 엔터키 이벤트 생성 및 트리거
-										const enterEvent = new KeyboardEvent('keydown', {
-											bubbles: true,
-											cancelable: true,
-											key: 'Enter',
-											code: 'Enter',
-											keyCode: 13
-										});
-										inputField.dispatchEvent(enterEvent);
-
-										// 세션 스토리지에서 값 삭제
 										sessionStorage.removeItem('selectedNaming');
 									}
 								}
