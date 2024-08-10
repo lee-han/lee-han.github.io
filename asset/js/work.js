@@ -237,6 +237,9 @@ if (zoomButton) {
         var image = document.getElementById('trackingImage');
         var overlay = document.getElementById('overlay');
 
+        // 현재 페이지의 URL 가져오기
+        var currentPath = window.location.pathname;
+
         // 오버레이 상태에 따라 보여주거나 숨기기
         if (overlay.style.display === 'grid') {
             // 오버레이가 이미 표시되어 있다면 숨깁니다.
@@ -247,18 +250,30 @@ if (zoomButton) {
                 overlay.style.display = 'grid';
                 overlay.style.width = image.width + 'px'; // 이미지의 실제 너비
                 overlay.style.height = image.height + 'px'; // 이미지의 실제 높이
-                overlay.style.gridTemplateColumns = 'repeat(16, 1fr)';
-                overlay.style.gridTemplateRows = 'repeat(6, 1fr)';
+
+                let cols, rows, imagePath;
+                if (currentPath.includes('work2.html')) {
+                    cols = 16;
+                    rows = 6;
+                    imagePath = 'asset/image/image_tile_dong/';
+                } else if (currentPath.includes('work3.html')) {
+                    cols = 7;
+                    rows = 11;
+                    imagePath = 'asset/image/image_tile_north/';
+                }
+
+                overlay.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                overlay.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
                 overlay.innerHTML = '';
 
-                for (let row = 1; row <= 6; row++) {
-                    for (let col = 1; col <= 16; col++) {
+                for (let row = 1; row <= rows; row++) {
+                    for (let col = 1; col <= cols; col++) {
                         const cell = document.createElement('div');
                         // 숫자 위치 변경
-                        const number = (6 - row) * 100 + col + 100;
+                        const number = (rows - row) * 100 + col + 100;
                         cell.textContent = number;
                         cell.addEventListener('click', function() {
-                            window.open('asset/image/image_tile_dong/' + number + '.jpg');
+                            window.open(imagePath + number + '.jpg');
                         });
                         overlay.appendChild(cell);
                     }
