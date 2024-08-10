@@ -62,6 +62,8 @@ $(document).ready(function() {
                                         window.location.href = '/map1.html';
                                     } else if (imageData === '동궐도') {
                                         window.location.href = '/map2.html';
+                                    } else if (imageData === '북궐도형') {
+                                        window.location.href = '/map3.html';
                                     }
                                     
                                     // 세션 스토리지에 데이터 저장
