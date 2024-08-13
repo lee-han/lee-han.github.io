@@ -128,3 +128,27 @@ hr {
 	margin-top: 2em;
 	margin-bottom: 2em;
 }
+
+.book-info-box {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.book-info-list {
+    padding: 3px;
+    margin: 10px;
+}
+
+.book-info-box::before {
+    content: "검색 요령";
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 0 10px;
+    font-weight: bold;
+}
