@@ -36,6 +36,10 @@
 			<h1>서궐도안</h1>
 			<h4>고려대학교박물관 소장</h4>
 			<p class="center contribute"></p>
+			<div>
+				<input type="checkbox" id="colorToggle">
+				<label for="colorToggle">색깔 변경(원본/흑백)</label>
+			</div>
 			<p class="center mt-2"><a href="guide.html"
 					target="_blank">※읽어보세요</a></p>
 			<hr>
@@ -87,6 +91,20 @@
 		<img src="asset/image/서궐도안3770x1175.jpg" alt="서궐도안" id="trackingImage">
 	</div>
 
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const colorToggle = document.getElementById('colorToggle');
+			const trackingImage = document.getElementById('trackingImage');
+			
+			colorToggle.addEventListener('change', function() {
+				if (this.checked) {
+					trackingImage.src = "asset/image/서궐도안3770x1175-흑백.jpg";
+				} else {
+					trackingImage.src = "asset/image/서궐도안3770x1175.jpg";
+				}
+			});
+		});
+		</script>
 	<script type="text/javascript" src="asset/js/work.js"></script>
 </body>
 
