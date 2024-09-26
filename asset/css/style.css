@@ -6,13 +6,38 @@
 	height: 100%;
 }
 
+#minimap {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 150px;
+    height: 100px;
+    border: 1px solid #00ff00; /* 형광색 녹색 */
+    box-shadow: 0 0 3px #00ff00; /* 형광색 효과를 위한 그림자 추가 */
+    overflow: hidden;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+#minimap img {
+    width: 100%;
+    height: auto;
+}
+
+#viewport-indicator {
+    position: absolute;
+    border: 2px solid red;
+    pointer-events: none;
+}
+
 #rightPanel {
-	margin-left: 400px;
-	/* 왼쪽 패널의 너비와 동일하게 설정 */
-	width: calc(100% - 400px);
-	/* 화면의 남은 너비를 사용하도록 계산 */
-	overflow-x: auto;
-	position: relative;
+    margin-left: 400px;
+    width: calc(100% - 400px);
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .panel {
