@@ -178,20 +178,48 @@ function loadSpreadsheetData() {
         .catch(() => console.log("Can't access response. Blocked by browser?"))
 }
 
-function setPanelWidths() {
-    var windowWidth = $(window).width();
-    var leftPanelWidth = 400; // CSS에서 설정한 너비
-    var rightPanelWidth = windowWidth - leftPanelWidth;
+function initMinimap() {
+    var minimap = $('#minimap');
+    var fullImage = $('#trackingImage');
+    var minimapImg = $('<img>').attr('src', fullImage.attr('src')).appendTo(minimap);
+    var rightPanel = $('#rightPanel');
+    var indicator = $('<div>').attr('id', 'viewport-indicator').appendTo(minimap);
 
-    $('#leftPanel').width(leftPanelWidth);
-    $('#rightPanel').css({
-        'width': rightPanelWidth + 'px'
+    updateMinimapSize();
+    updateMinimapViewport();
+
+    rightPanel.on('scroll', updateMinimapViewport);
+
+    minimap.on('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        function handleMouseMove(e) {
+            var clickX = e.pageX - minimap.offset().left;
+            var clickY = e.pageY - minimap.offset().top;
+
+            var scaleX = fullImage.width() / minimap.width();
+            var scaleY = fullImage.height() / minimap.height();
+
+            var scrollX = clickX * scaleX - rightPanel.width() / 2;
+            var scrollY = clickY * scaleY - rightPanel.height() / 2;
+
+            rightPanel.scrollLeft(scrollX);
+            rightPanel.scrollTop(scrollY);
+        }
+
+        $(document).on('mousemove', handleMouseMove);
+        $(document).on('mouseup', function() {
+            $(document).off('mousemove', handleMouseMove);
+        });
+
+        handleMouseMove(e);
     });
 
-    updateMinimapViewport();
+    minimap.css('pointer-events', 'auto');
 }
 
-function initMinimap() {
+function updateMinimapSize() {
     var minimap = $('#minimap');
     var fullImage = $('#trackingImage');
     var aspectRatio = fullImage.width() / fullImage.height();
@@ -202,29 +230,6 @@ function initMinimap() {
     minimap.css({
         width: minimapWidth + 'px',
         height: minimapHeight + 'px'
-    });
-
-    updateMinimapViewport();
-
-    $('#rightPanel').on('scroll', updateMinimapViewport);
-
-    $('#minimap').on('mousedown', function(e) {
-        e.preventDefault();
-        var minimap = $('#minimap');
-        var rightPanel = $('#rightPanel');
-        var fullImage = $('#trackingImage');
-
-        var clickX = e.pageX - minimap.offset().left;
-        var clickY = e.pageY - minimap.offset().top;
-
-        var scaleX = fullImage.width() / minimap.width();
-        var scaleY = fullImage.height() / minimap.height();
-
-        var scrollX = clickX * scaleX - rightPanel.width() / 2;
-        var scrollY = clickY * scaleY - rightPanel.height() / 2;
-
-        rightPanel.scrollLeft(scrollX);
-        rightPanel.scrollTop(scrollY);
     });
 }
 
@@ -256,6 +261,19 @@ function updateMinimapViewport() {
     });
 }
 
+function setPanelWidths() {
+    var windowWidth = $(window).width();
+    var leftPanelWidth = 400; // CSS에서 설정한 너비
+    var rightPanelWidth = windowWidth - leftPanelWidth;
+
+    $('#leftPanel').width(leftPanelWidth);
+    $('#rightPanel').css({
+        'width': rightPanelWidth + 'px'
+    });
+
+    updateMinimapViewport();
+}
+
 function getFillColorByCategory(category) {
     switch (category) {
         case '문':
@@ -270,3 +288,18 @@ function getFillColorByCategory(category) {
             return '#ffa500';
     }
 }
+
+$('<style>')
+    .prop('type', 'text/css')
+    .html(`
+        #minimap {
+            right: 30px; /* 스크롤바와의 간격 조정 */
+            background-color: #f0f0f0; /* 배경색 추가 */
+        }
+        #minimap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* cover에서 contain으로 변경 */
+        }
+    `)
+    .appendTo('head');
