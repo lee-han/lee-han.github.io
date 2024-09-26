@@ -196,17 +196,8 @@ function initMinimap() {
     var fullImage = $('#trackingImage');
     var aspectRatio = fullImage.width() / fullImage.height();
     
-    var maximumSize = window.location.pathname.includes('map3.html') ? 110 : 150;
-    
-    var minimapWidth, minimapHeight;
-
-    if (aspectRatio > 1) {
-        minimapWidth = maximumSize;
-        minimapHeight = minimapWidth / aspectRatio;
-    } else {
-        minimapHeight = maximumSize;
-        minimapWidth = minimapHeight * aspectRatio;
-    }
+    var minimapWidth = 150; // 고정된 가로 크기
+    var minimapHeight = minimapWidth / aspectRatio;
 
     minimap.css({
         width: minimapWidth + 'px',
