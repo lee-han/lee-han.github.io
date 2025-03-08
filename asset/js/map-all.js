@@ -66,6 +66,8 @@ $(document).ready(function() {
                                         window.location.href = '/map3.html';
                                     } else if (imageData === '서궐도안') {
                                         window.location.href = '/map4.html';
+                                    } else if (imageData === '숙천제아도') {
+                                        window.location.href = '/map5.html';
                                     }
                                     
                                     // 세션 스토리지에 데이터 저장
