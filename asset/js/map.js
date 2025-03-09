@@ -33,6 +33,11 @@ function loadSpreadsheetData() {
                         return row['이미지'] === h1Text;
                     });
                     
+					// 이미 초기화된 DataTable이 있으면 먼저 제거
+                    if ($.fn.DataTable.isDataTable('#example')) {
+                        $('#example').DataTable().destroy();
+                    }
+					
                     $('#example').DataTable({
                         "dom": 'f<it>',
                         "data": filteredData,
