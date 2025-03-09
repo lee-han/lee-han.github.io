@@ -36,6 +36,7 @@ function loadSpreadsheetData() {
 					// 이미 초기화된 DataTable이 있으면 먼저 제거
                     if ($.fn.DataTable.isDataTable('#example')) {
                         $('#example').DataTable().destroy();
+						$('#example').empty(); // 테이블 내용 완전히 비우기
                     }
 					
                     $('#example').DataTable({
