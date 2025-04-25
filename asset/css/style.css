@@ -177,3 +177,35 @@ hr {
     padding: 0 10px;
     font-weight: bold;
 }
+
+/* 깜빡이는 물음표 아이콘을 위한 스타일 */
+.help-icon {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	z-index: 1000;
+	font-size: 24px;
+	color: #12bbad;
+	animation: blink 1.5s infinite;
+	background-color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s;
+	text-decoration: none;
+}
+
+.help-icon:hover {
+	transform: scale(1.1);
+	animation: none;
+}
+
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.4; }
+	100% { opacity: 1; }
+}
