@@ -2,6 +2,33 @@ $(document).ready(function() {
     var csvFilePath = "asset/csv/data.csv";
     var fullImage = $('#trackingImage');
 
+    // 모바일 메뉴 토글 기능
+    var hamburgerBtn = $('#hamburgerBtn');
+    var leftPanel = $('#leftPanel');
+    var panelOverlay = $('#panelOverlay');
+
+    function toggleMenu() {
+        hamburgerBtn.toggleClass('active');
+        leftPanel.toggleClass('active');
+        panelOverlay.toggleClass('active');
+    }
+
+    function closeMenu() {
+        hamburgerBtn.removeClass('active');
+        leftPanel.removeClass('active');
+        panelOverlay.removeClass('active');
+    }
+
+    hamburgerBtn.on('click', toggleMenu);
+    panelOverlay.on('click', closeMenu);
+
+    // 테이블 행 클릭 시 모바일에서 메뉴 닫기
+    $(document).on('click', '#example tbody tr', function() {
+        if ($(window).width() <= 768) {
+            closeMenu();
+        }
+    });
+
     function initializeMap() {
         loadSpreadsheetData();
         setPanelWidths();
@@ -263,13 +290,26 @@ function updateMinimapViewport() {
 
 function setPanelWidths() {
     var windowWidth = $(window).width();
-    var leftPanelWidth = 400; // CSS에서 설정한 너비
-    var rightPanelWidth = windowWidth - leftPanelWidth;
 
-    $('#leftPanel').width(leftPanelWidth);
-    $('#rightPanel').css({
-        'width': rightPanelWidth + 'px'
-    });
+    // 모바일(768px 이하)에서는 rightPanel이 전체 화면을 차지
+    if (windowWidth <= 768) {
+        $('#leftPanel').css('width', '');
+        $('#rightPanel').css({
+            'margin-left': '0',
+            'width': '100%',
+            'left': '0'
+        });
+    } else {
+        var leftPanelWidth = 400;
+        var rightPanelWidth = windowWidth - leftPanelWidth;
+
+        $('#leftPanel').width(leftPanelWidth);
+        $('#rightPanel').css({
+            'margin-left': leftPanelWidth + 'px',
+            'width': rightPanelWidth + 'px',
+            'left': ''
+        });
+    }
 
     updateMinimapViewport();
 }
