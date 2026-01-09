@@ -159,6 +159,7 @@ hr {
     border-radius: 8px;
     padding: 20px;
     position: relative;
+    margin-top: 40px;
     margin-bottom: 30px;
 }
 
@@ -213,6 +214,24 @@ hr {
 .jumbotron {
 	padding-top: 1rem;
 	overflow: hidden;
+}
+
+/* 카드 그리드 레이아웃 */
+.jumbotron .row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	max-width: 58rem;
+	margin: 0 auto;
+	justify-content: flex-start;
+}
+
+.jumbotron .row > .col-sm {
+	flex: 0 0 auto;
+	width: auto;
+	max-width: none;
+	margin: 0 !important;
+	padding: 0;
 }
 
 /* 카드 링크 스타일 */
@@ -370,8 +389,13 @@ hr {
 		max-width: 100%;
 	}
 
-	.col-sm {
+	.jumbotron .row {
+		max-width: 100%;
+	}
+
+	.jumbotron .row > .col-sm {
 		flex: 0 0 100%;
 		max-width: 100%;
+		width: 100%;
 	}
 }
